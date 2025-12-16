@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Contact Us{% endblock %}
+
+{% block content %}
+<section class="py-3 bg-primary">
+  <div class="container text-center text-white">
+    <h1 class="fw-bold">Contact Us</h1>
+    <p class="text-white">We’d love to hear from you. Reach out anytime.</p>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container ">
+    <div class="row justify-content-center">
+      <!-- Contact Form -->
+      <div class="col-md-6">
+        <form method="post" class="p-4 bg-white shadow rounded-4">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" class="btn btn-primary w-100 rounded-pill">Send Message</button>
+        </form>
+
+        {% if messages %}
+          {% for msg in messages %}
+            <div class="alert alert-success mt-3">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
