@@ -1,0 +1,24 @@
+<!-- payment_page.html - পেমেন্ট ফর্ম
+<!DOCTYPE html>
+<html>
+<head>
+    <title>পেমেন্ট - Python Zone BD</title>
+</head>
+<body>
+    <div class="container">
+        <h2>পেমেন্ট কনফার্ম করুন</h2>
+        <p>প্রোডাক্ট: {{ product.name }}</p>
+        <p>মূল্য: ৳{{ product.price }}</p>
+        
+        <form method="post" action="{% url 'bkash_payment' %}">
+            {% csrf_token %}
+            <input type="hidden" name="product_id" value="{{ product.id }}">
+            <input type="hidden" name="amount" value="{{ product.price }}">
+            <button type="submit" class="bkash-btn">
+                <img src="/static/images/bkash-logo.png" alt="bKash">
+                বিকাশ দিয়ে পেমেন্ট করুন
+            </button>
+        </form>
+    </div>
+</body>
+</html> -->

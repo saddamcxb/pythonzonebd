@@ -8,13 +8,13 @@
                 min-height: 100vh;">
     <div class="container">
         <h1 class="display-3 fw-bold mb-4 animate__animated animate__fadeInDown">
-            Built in <span class="text-success">Django</span>. Secured by <span class="text-info">Python</span>.
+            Built in <span class="text-success">Django</span>. Secured by <span class="text-warning">Python</span>.
         </h1>
         <p class="lead mb-5 animate__animated animate__fadeInUp">
             Modern, secure, and scalable web solutions — delivered with trust.
         </p>
         <a href="{% url 'product_list' %}" 
-           class="btn btn-lg btn-light text-primary px-5 py-3 rounded-pill shadow animate__animated animate__fadeInUp">
+           class="btn btn-lg btn-light text-primary px-5 py-3 rounded-pill shadow animate__animated animate__fadeInUp fw-bolder">
             Explore Products
         </a>
     </div>
@@ -131,24 +131,29 @@
     <center>
       <h2 class="text-center fw-bold mb-5 section-title">Our Products</h2>
     </center>
-<div class="row g-4">
-        {% for product in products %}
+    <div class="row g-4">
+      {% for product in products %}
         <div class="col-md-4 col-sm-6">
             <div class="card h-100 shadow-lg border-0 rounded-3">
-                {% if product.images %}
-                    <img src="{{ product.images.url }}" class="card-img-top" alt="{{ product.title }}" style="height: 220px; object-fit: cover;">
-                {% endif %}
+                {% with product.images.first as first_image %}
+                  {% if first_image %}
+                      <img src="{{ first_image.image.url }}"
+                          class="card-img-top"
+                          alt="{{ product.title }}"
+                          style="height: 220px; object-fit: cover;">
+                  {% endif %}
+            {% endwith %}
 
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title fw-bold">{{ product.title }}</h5>
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title fw-bold">
+                <a href="{% url 'product_detail' product.id %}">{{ product.title }}</a>
+              </h5>
                     <p class="card-text text-muted small">{{ product.description|truncatewords:20 }}</p>
-
                     <ul class="list-unstyled small mb-3">
                         <li><strong>Tech:</strong> {{ product.technology }}</li>
-                        <li><strong>Delivery:</strong> {{ product.delivery_time }} days</li>
+                        <li><strong>Pages:</strong> {{ product.pages }} days</li>
                         <li><strong>Price:</strong> ${{ product.price }}</li>
                     </ul>
-
                     <div class="mt-auto">
                         <a href="{% url 'contact' %}" class="btn btn-primary w-100 rounded-pill">Get Your Website</a>
                     </div>

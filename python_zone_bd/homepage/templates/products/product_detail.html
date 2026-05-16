@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% block breadcrumb %}
+    <nav aria-label="breadcrumb" class="mb-3 mt-2">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+        <a href="{% url 'homepage' %}" class="text-decoration-none">
+            <i class="fa fa-home"></i> Home
+        </a>
+        </li>
+        <li class="breadcrumb-item">
+        <a href="{% url 'product_list' %}" class="text-decoration-none">
+            Shop
+        </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+        {{ product.title }}
+        </li>
+    </ol>
+    </nav>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <center>
+        <a href="#" class="btn btn-primary btn-lg mt-3 my-3">
+            <i class="fas fa-shopping-cart"></i> Purchase Now
+        </a>
+        </center>
+        <div class="col-lg-8">
+            <!-- Product Images -->
+            {% if product.images.all %}
+            <div id="productCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for image in product.images.all %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <img src="{{ image.image.url }}" 
+                             class="d-block w-100" 
+                             alt="{{ product.title }} screenshot {{ forloop.counter }}"
+                             style="max-height: 500px; object-fit: contain;">
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if product.images.count > 1 %}
+                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Video Demo Section -->
+            {% if product.has_video %}
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-video me-2"></i>Video Demo</h4>
+                </div>
+                <div class="card-body">
+                    <div class="video-wrapper">
+                        {% if product.video_file %}
+                            <video controls 
+                                   poster="{% if product.video_thumbnail %}{{ product.video_thumbnail.url }}{% endif %}"
+                                   class="w-100">
+                                <source src="{{ product.video_file.url }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        {% elif product.get_video_embed_url %}
+                            <iframe 
+                                src="{{ product.get_video_embed_url }}"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                            </iframe>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Product Details -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">Product Details</h4>
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title">{{ product.title }}</h1>
+                    <p class="card-text">{{ product.description|linebreaks }}</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="fas fa-code fa-2x text-primary"></i>
+                                <h6 class="mt-2">Technology</h6>
+                                <p>{{ product.technology }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="fas fa-clock fa-2x text-primary"></i>
+                                <h6 class="mt-2">Pages you will get!</h6>
+                                <p>{{ product.pages }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="fas fa-tag fa-2x text-primary"></i>
+                                <h6 class="mt-2">Price</h6>
+                                <p class="h4 text-success">${{ product.price }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if product.available %}
+                        <div class="alert alert-success mt-4">
+                            <i class="fas fa-check-circle"></i> This product is available for purchase
+                        </div>
+                        <a href="#" class="btn btn-primary btn-lg w-100 mt-3">
+                            <i class="fas fa-shopping-cart"></i> Purchase Now
+                        </a>
+                    {% else %}
+                        <div class="alert alert-warning mt-4">
+                            <i class="fas fa-exclamation-triangle"></i> Currently out of stock
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Quick Info Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Quick Overview</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <strong>Status:</strong> 
+                            {% if product.available %}
+                                <span class="text-success">Available</span>
+                            {% else %}
+                                <span class="text-danger">Not Available</span>
+                            {% endif %}
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-video me-2"></i>
+                            <strong>Video Demo:</strong> 
+                            {% if product.has_video %}
+                                <span class="text-success">Available</span>
+                            {% else %}
+                                <span class="text-muted">Not Available</span>
+                            {% endif %}
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-images me-2"></i>
+                            <strong>Screenshots:</strong> {{ product.images.count }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Contact Form (optional) -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Have Questions?</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="product" value="{{ product.id }}">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="name" placeholder="Your Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="email" class="form-control" name="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" name="message" rows="3" 
+                                      placeholder="Ask about this product..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary w-100">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    background: #000;
+    border-radius: 8px;
+}
+
+.video-wrapper iframe,
+.video-wrapper video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.carousel-item img {
+    background: #f8f9fa;
+}
+</style>
+{% endblock %}
