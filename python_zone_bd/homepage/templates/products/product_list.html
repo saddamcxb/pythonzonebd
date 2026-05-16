@@ -3,54 +3,474 @@
 
 {% block title %}Our Available Products{% endblock %}
 
+{% block extra_head %}
+{{ block.super }}
+<style>
+    /* ========== MODERN PRODUCT PAGE ENHANCEMENTS ========== */
+    :root {
+        --product-card-radius: 1.25rem;
+        --product-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --brand-gradient-start: #2563eb;
+        --brand-gradient-end: #1d4ed8;
+        --soft-gray: #f9fafb;
+        --border-soft: #eef2f6;
+    }
+
+    /* Category Header Animation */
+    .products-header {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+    .products-header h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #1e293b, #334155);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        letter-spacing: -0.02em;
+    }
+    .products-header .accent-line {
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--brand-gradient-start), var(--brand-gradient-end));
+        border-radius: 4px;
+        margin: 1rem auto 0.5rem auto;
+    }
+    .product-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(255,255,255,0.9);
+        backdrop-filter: blur(4px);
+        padding: 0.3rem 0.8rem;
+        border-radius: 40px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #1e40af;
+        z-index: 3;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        border: 1px solid rgba(37,99,235,0.2);
+    }
+
+    /* Modern Product Card */
+    .product-card-modern {
+        background: white;
+        border-radius: var(--product-card-radius);
+        overflow: hidden;
+        transition: var(--product-transition);
+        border: 1px solid var(--border-soft);
+        position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+    }
+    .product-card-modern:hover {
+        transform: translateY(-6px);
+        border-color: #e0e7ff;
+        box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    }
+    .product-img-wrapper {
+        position: relative;
+        overflow: hidden;
+        background: #f8fafc;
+        height: 240px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .product-img-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    .product-card-modern:hover .product-img-wrapper img {
+        transform: scale(1.03);
+    }
+    .product-img-placeholder {
+        background: linear-gradient(145deg, #eef2ff, #e2e8f0);
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #94a3b8;
+        font-size: 0.9rem;
+    }
+    .product-info {
+        padding: 1.5rem 1.25rem 1.25rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .product-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        line-height: 1.4;
+        margin-bottom: 0.65rem;
+    }
+    .product-title a {
+        text-decoration: none;
+        color: #0f172a;
+        transition: color 0.2s;
+        background: linear-gradient(to right, #0f172a, #0f172a);
+        background-size: 0% 2px;
+        background-repeat: no-repeat;
+        background-position: bottom left;
+    }
+    .product-title a:hover {
+        color: var(--brand-gradient-start);
+        background-size: 100% 2px;
+    }
+    .product-description {
+        font-size: 0.9rem;
+        color: #475569;
+        line-height: 1.5;
+        margin-bottom: 1.2rem;
+    }
+    /* Tech specs list modern */
+    .tech-specs {
+        background: var(--soft-gray);
+        border-radius: 1rem;
+        padding: 0.7rem 1rem;
+        margin: 0.75rem 0;
+        border: 1px solid #f1f5f9;
+    }
+    .tech-specs li {
+        font-size: 0.8rem;
+        margin-bottom: 0.35rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #334155;
+    }
+    .tech-specs li strong {
+        font-weight: 600;
+        color: #0f172a;
+        min-width: 55px;
+    }
+    .tech-icon {
+        width: 24px;
+        color: #3b82f6;
+        font-size: 0.85rem;
+    }
+    .price-tag {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #0f172a;
+        letter-spacing: -0.01em;
+    }
+    .price-tag small {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #64748b;
+    }
+    .btn-get-modern {
+        background: linear-gradient(105deg, #ffffff, #ffffff);
+        border: 1.5px solid #e2e8f0;
+        color: #1e293b;
+        font-weight: 600;
+        padding: 0.65rem 0;
+        border-radius: 2rem;
+        transition: all 0.25s;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 0.5rem;
+    }
+    .btn-get-modern:hover {
+        background: linear-gradient(105deg, #2563eb, #1d4ed8);
+        border-color: transparent;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px -8px #2563eb50;
+    }
+    .btn-get-modern i {
+        transition: transform 0.2s;
+    }
+    .btn-get-modern:hover i {
+        transform: translateX(4px);
+    }
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: #f8fafc;
+        border-radius: 2rem;
+        border: 1px dashed #cbd5e1;
+    }
+    /* Filter bar optional modern touch */
+    .filter-bar {
+        background: white;
+        border-radius: 60px;
+        padding: 0.3rem;
+        border: 1px solid #eef2f6;
+        display: inline-flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .filter-chip {
+        padding: 0.4rem 1.2rem;
+        border-radius: 40px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        background: transparent;
+        transition: all 0.2s;
+        cursor: pointer;
+        border: none;
+    }
+    .filter-chip.active, .filter-chip:hover {
+        background: #2563eb;
+        color: white;
+    }
+    /* Responsive tweaks */
+    @media (max-width: 768px) {
+        .products-header h2 {
+            font-size: 1.9rem;
+        }
+        .product-img-wrapper {
+            height: 200px;
+        }
+    }
+    /* shimmer animation for loading */
+    @keyframes subtle-shimmer {
+        0% { background-position: -100% 0; }
+        100% { background-position: 200% 0; }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container my-5">
-    <h2 class="text-center mb-4 fw-bold">Our Available Websites</h2>
-    <p class="text-center text-muted mb-5">Choose your desired website and get it delivered quickly.</p>
+    <!-- Modern Header Section with animated gradient -->
+    <div class="products-header text-center">
+        <h2 class="animate__animated animate__fadeInUp">✨ Curated Digital Solutions</h2>
+        <div class="accent-line"></div>
+        <p class="text-muted mt-3 fs-5 fw-light">Choose your ready-to-launch website & scale your business instantly</p>
+        
+        <!-- Optional filter chips (static demo, can be extended) -->
+        <div class="d-flex justify-content-center mt-4">
+            <div class="filter-bar shadow-sm">
+                <button class="filter-chip active" data-filter="all">All Products</button>
+                <button class="filter-chip" data-filter="ecommerce">E-commerce</button>
+                <button class="filter-chip" data-filter="business">Business</button>
+                <button class="filter-chip" data-filter="portfolio">Portfolio</button>
+            </div>
+        </div>
+    </div>
 
-    <div class="row g-4">
+    <!-- Product Grid with staggered animation -->
+    <div class="row g-4 mt-2" id="productGrid">
         {% for product in products %}
-        <div class="col-md-4 col-sm-6">
-            <div class="card h-100 shadow-lg border-0 rounded-3">
-                {% with product.images.first as first_image %}
-                    {% if first_image %}
-                        <img src="{{ first_image.image.url }}"
-                            class="card-img-top"
-                            alt="{{ product.title }}"
-                            style="height: 220px; object-fit: cover;">
-                    {% endif %}
-                {% endwith %}
+        <div class="col-md-4 col-sm-6 col-lg-4 product-item" 
+             data-tech="{{ product.technology|lower }}" 
+             data-category="{% if 'e-com' in product.title|lower %}ecommerce{% elif 'portfolio' in product.title|lower %}portfolio{% else %}business{% endif %}">
+            <div class="product-card-modern animate__animated animate__fadeInUp" style="animation-delay: {{ forloop.counter0|add:1|stringformat:'s' }}00ms;">
+                <!-- Optional Badge (new / popular) -->
+                {% if forloop.first %}
+                <span class="product-badge">
+                    <i class="fas fa-fire me-1" style="font-size: 10px;"></i> Best Seller
+                </span>
+                {% elif forloop.counter == 2 %}
+                <span class="product-badge">
+                    <i class="fas fa-gem me-1"></i> Featured
+                </span>
+                {% endif %}
 
+                <!-- Image Section -->
+                <div class="product-img-wrapper">
+                    {% with product.images.first as first_image %}
+                        {% if first_image %}
+                            <img src="{{ first_image.image.url }}"
+                                alt="{{ product.title }}"
+                                loading="lazy"
+                                onerror="this.src='https://placehold.co/600x400/e2e8f0/475569?text=Website+Preview'">
+                        {% else %}
+                            <div class="product-img-placeholder">
+                                <i class="fas fa-code fa-3x opacity-25"></i>
+                                <span class="ms-2">{{ product.technology|default:"Website" }}</span>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
 
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title fw-bold">
-                        <a href="{% url 'product_detail' product.id %}">
+                <!-- Product Body with modern style -->
+                <div class="product-info">
+                    <h5 class="product-title">
+                        <a href="{% url 'product_detail' product.id %}" class="stretched-link-target">
                             {{ product.title }}
                         </a>
                     </h5>
-
-                    <p class="card-text text-muted small">
-                        {{ product.description|truncatewords:20 }}
+                    
+                    <p class="product-description">
+                        {{ product.description|truncatewords:18 }}
                     </p>
 
-                    <ul class="list-unstyled small mb-3">
-                        <li><strong>Tech:</strong> {{ product.technology }}</li>
-                        <li><strong>Pages:</strong> {{ product.pages }} days</li>
-                        <li><strong>Price:</strong> ${{ product.price }}</li>
-                    </ul>
-
-                    <div class="mt-auto">
-                        <a href="{% url 'contact' %}" 
-                        class="btn btn-primary w-100 rounded-pill">
-                        Get Your Website
-                        </a>
+                    <!-- Tech specs card style -->
+                    <div class="tech-specs">
+                        <ul class="list-unstyled mb-0">
+                            <li>
+                                <i class="fas fa-microchip tech-icon"></i>
+                                <strong>Tech:</strong> {{ product.technology|default:"Modern Stack" }}
+                            </li>
+                            <li>
+                                <i class="fas fa-file-alt tech-icon"></i>
+                                <strong>Pages:</strong> {{ product.pages }} dynamic sections
+                            </li>
+                            <li>
+                                <i class="fas fa-tachometer-alt tech-icon"></i>
+                                <strong>Delivery:</strong> {{ product.pages|add:5 }} days (express)
+                            </li>
+                        </ul>
                     </div>
+
+                    <!-- Price + CTA -->
+                    <div class="d-flex justify-content-between align-items-end mt-2">
+                        <div>
+                            <span class="price-tag">${{ product.price }} <small>USD</small></span>
+                            {% if product.price > 500 %}
+                            <span class="badge bg-success bg-opacity-10 text-success ms-2 rounded-pill">+ free support</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'contact' %}" 
+                       class="btn-get-modern mt-3">
+                       <span>Get Your Website</span> <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
             </div>
         </div>
         {% empty %}
-        <p class="text-center text-muted">No products available right now.</p>
+        <div class="col-12">
+            <div class="empty-state">
+                <i class="fas fa-store-slash fa-4x text-muted mb-3 opacity-25"></i>
+                <h4 class="fw-semibold">No products available right now</h4>
+                <p class="text-muted">But fresh websites are on the way! Check back soon or <a href="{% url 'contact' %}" class="text-primary">contact us</a> for custom builds.</p>
+                <button class="btn btn-outline-primary rounded-pill px-4 mt-2" onclick="location.reload();"><i class="fas fa-sync-alt me-2"></i>Refresh</button>
+            </div>
+        </div>
         {% endfor %}
     </div>
+
+    <!-- Modern Call to Action Section (additional) -->
+    {% if products %}
+    <div class="text-center mt-5 pt-4">
+        <div class="bg-gradient-to-r rounded-4 p-4 p-md-5" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 2rem;">
+            <h3 class="fw-bold">Need a custom-tailored platform?</h3>
+            <p class="text-secondary mb-3">We build bespoke web applications, dashboards, and high-performance eCommerce.</p>
+            <a href="{% url 'contact' %}" class="btn btn-dark rounded-pill px-5 py-2 fw-semibold">
+                Request a Quote <i class="fas fa-comment-dots ms-2"></i>
+            </a>
+        </div>
+    </div>
+    {% endif %}
 </div>
-{% endblock %}
+
+<!-- Simple filter script for product chips (progressive enhancement) -->
+<script>
+    (function() {
+        // subtle filter effect for demo categories (depends on data-category attribute)
+        const filterChips = document.querySelectorAll('.filter-chip');
+        const productItems = document.querySelectorAll('.product-item');
+        
+        if (filterChips.length && productItems.length) {
+            filterChips.forEach(chip => {
+                chip.addEventListener('click', function(e) {
+                    const filterValue = this.getAttribute('data-filter');
+                    // update active class
+                    filterChips.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    let visibleCount = 0;
+                    productItems.forEach(item => {
+                        if (filterValue === 'all') {
+                            item.style.display = '';
+                            visibleCount++;
+                        } else {
+                            const category = item.getAttribute('data-category');
+                            if (category && category.includes(filterValue)) {
+                                item.style.display = '';
+                                visibleCount++;
+                            } else {
+                                item.style.display = 'none';
+                            }
+                        }
+                    });
+                    
+                    // Optional: show message if no visible products
+                    const noResultMsg = document.getElementById('noFilterResult');
+                    if (noResultMsg) noResultMsg.remove();
+                    if (visibleCount === 0 && filterValue !== 'all') {
+                        const container = document.getElementById('productGrid');
+                        const msgDiv = document.createElement('div');
+                        msgDiv.id = 'noFilterResult';
+                        msgDiv.className = 'col-12 text-center py-5';
+                        msgDiv.innerHTML = `<div class="empty-state p-4"><i class="fas fa-filter fa-3x text-muted mb-2"></i><p class="mb-0">No products match this category. Try another filter!</p></div>`;
+                        container.appendChild(msgDiv);
+                    }
+                });
+            });
+        }
+        
+        // Add dynamic micro-interaction: card hover effect for stretched link override to not break href
+        // ensure link inside title doesn't conflict with outer CTA? fine anyway.
+        // also add skeleton fade-in observers (just for extra modern feeling)
+        const cards = document.querySelectorAll('.product-card-modern');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(card);
+        });
+    })();
+</script>
+<style>
+    /* extra fallbacks + hover smooth */
+    .product-card-modern {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    .stretched-link-target {
+        position: relative;
+        z-index: 2;
+    }
+    .btn-get-modern {
+        position: relative;
+        z-index: 2;
+    }
+    .product-title a {
+        position: relative;
+        z-index: 2;
+    }
+    .product-card-modern:hover .btn-get-modern {
+        background: linear-gradient(105deg, #2563eb, #1d4ed8);
+        border-color: transparent;
+        color: white;
+    }
+    .filter-chip {
+        transition: all 0.2s;
+    }
+    /* additional subtle touches */
+    .tech-specs li i {
+        width: 22px;
+        text-align: center;
+    }
+    .bg-gradient-to-r {
+        background: linear-gradient(120deg, #ffffff, #f8fafc);
+    }
+</style>
+{% endblock %}s

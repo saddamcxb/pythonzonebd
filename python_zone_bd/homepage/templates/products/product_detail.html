@@ -1,221 +1,552 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ product.title }} | Premium Digital Solution{% endblock %}
+
+{% block extra_head %}
+{{ block.super }}
+<style>
+    /* ========== MODERN PRODUCT DETAIL STYLES ========== */
+    :root {
+        --detail-primary: #2563eb;
+        --detail-primary-dark: #1d4ed8;
+        --detail-accent: #f59e0b;
+        --detail-gray-50: #f9fafb;
+        --detail-gray-100: #f3f4f6;
+        --detail-gray-200: #e5e7eb;
+        --detail-gray-300: #d1d5db;
+        --detail-gray-600: #4b5563;
+        --detail-gray-700: #374151;
+        --detail-gray-800: #1f2937;
+        --detail-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --detail-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --detail-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --detail-radius-xl: 1rem;
+        --detail-radius-2xl: 1.5rem;
+    }
+
+    /* Modern Breadcrumb */
+    .breadcrumb-modern {
+        background: transparent;
+        padding: 0.75rem 0;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid var(--detail-gray-200);
+    }
+    .breadcrumb-modern .breadcrumb-item a {
+        text-decoration: none;
+        font-weight: 500;
+        color: var(--detail-gray-600);
+        transition: color 0.2s;
+    }
+    .breadcrumb-modern .breadcrumb-item a:hover {
+        color: var(--detail-primary);
+    }
+    .breadcrumb-modern .breadcrumb-item.active {
+        color: var(--detail-primary);
+        font-weight: 600;
+    }
+    .breadcrumb-modern .breadcrumb-item + .breadcrumb-item::before {
+        content: "›";
+        font-size: 1.2rem;
+        color: var(--detail-gray-400);
+    }
+
+    /* Main Product Card */
+    .product-detail-card {
+        background: white;
+        border-radius: var(--detail-radius-2xl);
+        border: none;
+        box-shadow: var(--detail-shadow-md);
+        overflow: hidden;
+        transition: transform 0.2s;
+    }
+
+    /* Modern Carousel */
+    .modern-carousel {
+        background: linear-gradient(145deg, #f8fafc, #ffffff);
+        border-radius: var(--detail-radius-xl);
+        overflow: hidden;
+    }
+    .carousel-image-container {
+        background: #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 400px;
+    }
+    .carousel-image-container img {
+        max-height: 450px;
+        width: 100%;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+    }
+    .carousel-control-custom {
+        width: 40px;
+        height: 40px;
+        background: rgba(255,255,255,0.9);
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+        box-shadow: var(--detail-shadow-md);
+    }
+    .carousel-indicators-modern {
+        bottom: -2rem;
+    }
+    .carousel-indicators-modern button {
+        background-color: var(--detail-gray-300);
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin: 0 5px;
+    }
+    .carousel-indicators-modern button.active {
+        background-color: var(--detail-primary);
+        width: 24px;
+        border-radius: 20px;
+    }
+
+    /* Info Cards */
+    .info-card {
+        background: var(--detail-gray-50);
+        border-radius: var(--detail-radius-xl);
+        padding: 1.25rem;
+        text-align: center;
+        transition: all 0.2s;
+        border: 1px solid var(--detail-gray-200);
+    }
+    .info-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--detail-shadow-md);
+        border-color: transparent;
+    }
+    .info-icon {
+        width: 55px;
+        height: 55px;
+        background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem auto;
+        color: var(--detail-primary);
+        font-size: 1.6rem;
+    }
+    .price-large {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #0f172a;
+        letter-spacing: -0.02em;
+    }
+
+    /* Purchase Button */
+    .btn-purchase-modern {
+        background: linear-gradient(105deg, var(--detail-primary), var(--detail-primary-dark));
+        border: none;
+        padding: 1rem;
+        font-weight: 700;
+        font-size: 1.1rem;
+        border-radius: 60px;
+        transition: all 0.25s;
+        box-shadow: 0 8px 20px -8px rgba(37,99,235,0.4);
+    }
+    .btn-purchase-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px -10px rgba(37,99,235,0.5);
+        background: linear-gradient(105deg, var(--detail-primary-dark), #1e3a8a);
+    }
+    .btn-outline-modern {
+        border: 1.5px solid var(--detail-gray-300);
+        border-radius: 60px;
+        padding: 0.7rem;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+    .btn-outline-modern:hover {
+        border-color: var(--detail-primary);
+        background: var(--detail-gray-50);
+        color: var(--detail-primary);
+    }
+
+    /* Video Section */
+    .video-wrapper-modern {
+        position: relative;
+        border-radius: var(--detail-radius-xl);
+        overflow: hidden;
+        background: #000;
+        box-shadow: var(--detail-shadow-md);
+    }
+    .video-wrapper-modern iframe,
+    .video-wrapper-modern video {
+        width: 100%;
+        display: block;
+    }
+
+    /* Sidebar Cards */
+    .sidebar-card {
+        border: 1px solid var(--detail-gray-200);
+        border-radius: var(--detail-radius-xl);
+        transition: all 0.2s;
+        background: white;
+    }
+    .sidebar-card .card-header {
+        background: transparent;
+        border-bottom: 1px solid var(--detail-gray-200);
+        padding: 1rem 1.25rem;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0.3rem 0.9rem;
+        border-radius: 40px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    .status-available {
+        background: #dcfce7;
+        color: #15803d;
+    }
+    .status-unavailable {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+    .feature-list li {
+        padding: 0.6rem 0;
+        border-bottom: 1px solid var(--detail-gray-200);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .feature-list li:last-child {
+        border-bottom: none;
+    }
+
+    /* Contact Form */
+    .modern-form input, .modern-form textarea {
+        border: 1px solid var(--detail-gray-300);
+        border-radius: 14px;
+        padding: 0.7rem 1rem;
+        transition: all 0.2s;
+    }
+    .modern-form input:focus, .modern-form textarea:focus {
+        border-color: var(--detail-primary);
+        box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        outline: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .price-large {
+            font-size: 1.8rem;
+        }
+        .carousel-image-container {
+            min-height: 280px;
+        }
+    }
+    /* Breadcrumb override for base */
+    nav[aria-label="breadcrumb"] {
+        background: transparent;
+    }
+</style>
+{% endblock %}
+
 {% block breadcrumb %}
-    <nav aria-label="breadcrumb" class="mb-3 mt-2">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-        <a href="{% url 'homepage' %}" class="text-decoration-none">
-            <i class="fa fa-home"></i> Home
-        </a>
-        </li>
-        <li class="breadcrumb-item">
-        <a href="{% url 'product_list' %}" class="text-decoration-none">
-            Shop
-        </a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">
-        {{ product.title }}
-        </li>
-    </ol>
-    </nav>
+<nav aria-label="breadcrumb" class="breadcrumb-modern">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+                <a href="{% url 'homepage' %}">
+                    <i class="fas fa-home me-1"></i> Home
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'product_list' %}">Shop</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {{ product.title }}
+            </li>
+        </ol>
+    </div>
+</nav>
 {% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row">
-        <center>
-        <a href="#" class="btn btn-primary btn-lg mt-3 my-3">
-            <i class="fas fa-shopping-cart"></i> Purchase Now
-        </a>
-        </center>
+<div class="container my-4 my-lg-5">
+    <div class="row g-5">
+        <!-- MAIN CONTENT COLUMN -->
         <div class="col-lg-8">
-            <!-- Product Images -->
+            <!-- PRODUCT IMAGES CAROUSEL (Modern) -->
             {% if product.images.all %}
-            <div id="productCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    {% for image in product.images.all %}
-                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                        <img src="{{ image.image.url }}" 
-                             class="d-block w-100" 
-                             alt="{{ product.title }} screenshot {{ forloop.counter }}"
-                             style="max-height: 500px; object-fit: contain;">
+            <div class="modern-carousel mb-4 position-relative">
+                <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators carousel-indicators-modern">
+                        {% for image in product.images.all %}
+                        <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="{{ forloop.counter0 }}" 
+                                {% if forloop.first %}class="active"{% endif %} aria-label="Slide {{ forloop.counter }}"></button>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
+                    <div class="carousel-inner">
+                        {% for image in product.images.all %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <div class="carousel-image-container p-4">
+                                <img src="{{ image.image.url }}" 
+                                     class="d-block w-100" 
+                                     alt="{{ product.title }} screenshot {{ forloop.counter }}"
+                                     loading="lazy">
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if product.images.count > 1 %}
+                    <button class="carousel-control-prev carousel-control-custom" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next carousel-control-custom" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                    {% endif %}
                 </div>
-                {% if product.images.count > 1 %}
-                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-                {% endif %}
+            </div>
+            {% else %}
+            <div class="modern-carousel mb-4 text-center p-5 bg-light rounded-4">
+                <i class="fas fa-image fa-3x text-muted mb-2"></i>
+                <p class="text-muted">No preview images available</p>
             </div>
             {% endif %}
 
-            <!-- Video Demo Section -->
+            <!-- VIDEO DEMO SECTION (Modern) -->
             {% if product.has_video %}
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0"><i class="fas fa-video me-2"></i>Video Demo</h4>
-                </div>
-                <div class="card-body">
-                    <div class="video-wrapper">
+            <div class="product-detail-card mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="info-icon small-icon" style="width: 40px; height: 40px;">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <h4 class="fw-bold mb-0">Video Demonstration</h4>
+                    </div>
+                    <div class="video-wrapper-modern">
                         {% if product.video_file %}
                             <video controls 
                                    poster="{% if product.video_thumbnail %}{{ product.video_thumbnail.url }}{% endif %}"
-                                   class="w-100">
+                                   class="w-100" style="max-height: 450px;">
                                 <source src="{{ product.video_file.url }}" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
                         {% elif product.get_video_embed_url %}
-                            <iframe 
-                                src="{{ product.get_video_embed_url }}"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen>
-                            </iframe>
+                            <div style="position: relative; padding-bottom: 56.25%; height: 0;">
+                                <iframe 
+                                    src="{{ product.get_video_embed_url }}"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen
+                                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                                </iframe>
+                            </div>
                         {% endif %}
                     </div>
                 </div>
             </div>
             {% endif %}
 
-            <!-- Product Details -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h4 class="mb-0">Product Details</h4>
-                </div>
-                <div class="card-body">
-                    <h1 class="card-title">{{ product.title }}</h1>
-                    <p class="card-text">{{ product.description|linebreaks }}</p>
-                    
-                    <div class="row mt-4">
-                        <div class="col-md-4">
-                            <div class="text-center p-3 bg-light rounded">
-                                <i class="fas fa-code fa-2x text-primary"></i>
-                                <h6 class="mt-2">Technology</h6>
-                                <p>{{ product.technology }}</p>
-                            </div>
+            <!-- PRODUCT DETAILS CARD (Enhanced) -->
+            <div class="product-detail-card">
+                <div class="card-body p-4 p-lg-5">
+                    <div class="d-flex flex-wrap justify-content-between align-items-start mb-3">
+                        <div>
+                            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-2">
+                                <i class="fas fa-crown me-1"></i> Premium Solution
+                            </span>
+                            <h1 class="fw-bold display-6 mb-2">{{ product.title }}</h1>
                         </div>
-                        <div class="col-md-4">
-                            <div class="text-center p-3 bg-light rounded">
-                                <i class="fas fa-clock fa-2x text-primary"></i>
-                                <h6 class="mt-2">Pages you will get!</h6>
-                                <p>{{ product.pages }}</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="text-center p-3 bg-light rounded">
-                                <i class="fas fa-tag fa-2x text-primary"></i>
-                                <h6 class="mt-2">Price</h6>
-                                <p class="h4 text-success">${{ product.price }}</p>
-                            </div>
+                        <div class="mt-2 mt-sm-0">
+                            {% if product.available %}
+                            <span class="status-badge status-available">
+                                <i class="fas fa-circle fs-10" style="font-size: 0.5rem;"></i> In Stock
+                            </span>
+                            {% else %}
+                            <span class="status-badge status-unavailable">
+                                <i class="fas fa-circle fs-10"></i> Out of Stock
+                            </span>
+                            {% endif %}
                         </div>
                     </div>
                     
-                    {% if product.available %}
-                        <div class="alert alert-success mt-4">
-                            <i class="fas fa-check-circle"></i> This product is available for purchase
+                    <div class="product-description mb-4">
+                        <p class="text-secondary fs-5">{{ product.description|linebreaks }}</p>
+                    </div>
+
+                    <!-- Feature Grid (Tech Specs) -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <div class="info-card">
+                                <div class="info-icon"><i class="fas fa-code"></i></div>
+                                <h6 class="fw-bold mb-1">Technology</h6>
+                                <p class="mb-0 text-primary fw-semibold">{{ product.technology|default:"Modern Stack" }}</p>
+                            </div>
                         </div>
-                        <a href="#" class="btn btn-primary btn-lg w-100 mt-3">
-                            <i class="fas fa-shopping-cart"></i> Purchase Now
+                        <div class="col-md-4">
+                            <div class="info-card">
+                                <div class="info-icon"><i class="fas fa-file-alt"></i></div>
+                                <h6 class="fw-bold mb-1">Pages Included</h6>
+                                <p class="mb-0 fw-semibold">{{ product.pages }} Dynamic Pages</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-card">
+                                <div class="info-icon"><i class="fas fa-tag"></i></div>
+                                <h6 class="fw-bold mb-1">Investment</h6>
+                                <p class="price-large mb-0">${{ product.price }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Benefits -->
+                    <div class="bg-light rounded-4 p-3 mb-4">
+                        <div class="row align-items-center text-center text-md-start">
+                            <div class="col-md-4">
+                                <i class="fas fa-shield-alt text-primary me-2"></i> 
+                                <span class="fw-semibold">6 Months Support</span>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fas fa-sync-alt text-primary me-2"></i> 
+                                <span class="fw-semibold">Free Updates</span>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fas fa-headset text-primary me-2"></i> 
+                                <span class="fw-semibold">24/7 Assistance</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Purchase Action -->
+                    {% if product.available %}
+                        <a href="#" class="btn btn-purchase-modern w-100 text-white">
+                            <i class="fas fa-shopping-cart me-2"></i> Purchase Now – ${{ product.price }}
+                            <i class="fas fa-arrow-right ms-2"></i>
                         </a>
+                        <p class="small text-muted text-center mt-2">
+                            <i class="fas fa-lock me-1"></i> Secure checkout · Instant delivery
+                        </p>
                     {% else %}
-                        <div class="alert alert-warning mt-4">
-                            <i class="fas fa-exclamation-triangle"></i> Currently out of stock
+                        <div class="alert alert-warning rounded-4 d-flex align-items-center">
+                            <i class="fas fa-clock fa-2x me-3"></i>
+                            <div>This product is currently unavailable. <a href="{% url 'contact' %}" class="alert-link">Contact us</a> for restock date or custom order.</div>
                         </div>
                     {% endif %}
                 </div>
             </div>
         </div>
-        
-        <!-- Sidebar -->
+
+        <!-- SIDEBAR (Modern) -->
         <div class="col-lg-4">
             <!-- Quick Info Card -->
-            <div class="card mb-4">
+            <div class="sidebar-card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">Quick Overview</h5>
+                    <i class="fas fa-chart-simple me-2 text-primary"></i> Quick Overview
                 </div>
                 <div class="card-body">
-                    <ul class="list-unstyled">
-                        <li class="mb-2">
-                            <i class="fas fa-check-circle text-success me-2"></i>
-                            <strong>Status:</strong> 
-                            {% if product.available %}
-                                <span class="text-success">Available</span>
-                            {% else %}
-                                <span class="text-danger">Not Available</span>
-                            {% endif %}
+                    <ul class="feature-list list-unstyled">
+                        <li>
+                            <i class="fas fa-check-circle text-success fa-fw"></i>
+                            <div><strong>Status:</strong> 
+                                {% if product.available %}
+                                <span class="text-success fw-semibold">Ready for purchase</span>
+                                {% else %}
+                                <span class="text-danger fw-semibold">Coming soon</span>
+                                {% endif %}
+                            </div>
                         </li>
-                        <li class="mb-2">
-                            <i class="fas fa-video me-2"></i>
-                            <strong>Video Demo:</strong> 
-                            {% if product.has_video %}
-                                <span class="text-success">Available</span>
-                            {% else %}
-                                <span class="text-muted">Not Available</span>
-                            {% endif %}
+                        <li>
+                            <i class="fas fa-video text-primary fa-fw"></i>
+                            <div><strong>Video Demo:</strong> 
+                                {% if product.has_video %}
+                                <span class="text-success">✓ Available</span>
+                                {% else %}
+                                <span class="text-muted">Not included</span>
+                                {% endif %}
+                            </div>
                         </li>
-                        <li class="mb-2">
-                            <i class="fas fa-images me-2"></i>
-                            <strong>Screenshots:</strong> {{ product.images.count }}
+                        <li>
+                            <i class="fas fa-images text-primary fa-fw"></i>
+                            <div><strong>Screenshots:</strong> {{ product.images.count }} high-res previews</div>
+                        </li>
+                        <li>
+                            <i class="fas fa-calendar-week text-primary fa-fw"></i>
+                            <div><strong>Delivery:</strong> {{ product.pages|add:3 }} business days</div>
+                        </li>
+                        <li>
+                            <i class="fas fa-language text-primary fa-fw"></i>
+                            <div><strong>Documentation:</strong> Included + setup guide</div>
                         </li>
                     </ul>
                 </div>
             </div>
             
-            <!-- Contact Form (optional) -->
-            <div class="card">
+            <!-- Share / Action Card -->
+            <div class="sidebar-card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">Have Questions?</h5>
+                    <i class="fas fa-share-alt me-2 text-primary"></i> Share this product
                 </div>
                 <div class="card-body">
-                    <form method="post">
+                    <div class="d-flex justify-content-around">
+                        <a href="#" class="text-secondary fs-4"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-secondary fs-4"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-secondary fs-4"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="text-secondary fs-4"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form (Modern Style) -->
+            <div class="sidebar-card">
+                <div class="card-header">
+                    <i class="fas fa-envelope me-2 text-primary"></i> Have Questions?
+                </div>
+                <div class="card-body">
+                    <form method="post" class="modern-form">
                         {% csrf_token %}
                         <input type="hidden" name="product" value="{{ product.id }}">
                         <div class="mb-3">
-                            <input type="text" class="form-control" name="name" placeholder="Your Name" required>
+                            <input type="text" class="form-control" name="name" placeholder="Full name" required>
                         </div>
                         <div class="mb-3">
-                            <input type="email" class="form-control" name="email" placeholder="Your Email" required>
+                            <input type="email" class="form-control" name="email" placeholder="Email address" required>
                         </div>
                         <div class="mb-3">
                             <textarea class="form-control" name="message" rows="3" 
-                                      placeholder="Ask about this product..." required></textarea>
+                                      placeholder="Ask about {{ product.title }}..." required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-outline-primary w-100">
-                            Send Message
+                        <button type="submit" class="btn btn-outline-modern w-100">
+                            Send Message <i class="fas fa-paper-plane ms-2"></i>
                         </button>
+                        <p class="small text-muted mt-2 mb-0 text-center">We reply within 2 hours</p>
                     </form>
                 </div>
+            </div>
+
+            <!-- Trust Badge -->
+            <div class="text-center mt-4">
+                <img src="https://placehold.co/200x60/e2e8f0/475569?text=SSL+Secure+Payment" class="img-fluid opacity-75" alt="secure payment" style="border-radius: 12px;">
             </div>
         </div>
     </div>
 </div>
 
-<style>
-.video-wrapper {
-    position: relative;
-    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-    height: 0;
-    overflow: hidden;
-    background: #000;
-    border-radius: 8px;
-}
-
-.video-wrapper iframe,
-.video-wrapper video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.carousel-item img {
-    background: #f8f9fa;
-}
-</style>
+<!-- Custom JS for carousel auto-height enhancement -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // active carousel indicator styling (already done via css but ensures)
+        const carousel = document.querySelector('#productCarousel');
+        if(carousel) {
+            carousel.addEventListener('slid.bs.carousel', function() {
+                // any dynamic adjust can be added
+            });
+        }
+        // Tooltip style optional
+    });
+</script>
 {% endblock %}

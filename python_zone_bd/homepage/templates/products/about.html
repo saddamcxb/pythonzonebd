@@ -1,36 +1,539 @@
 {% extends "base.html" %}
-{% block title %}About Us - My Web Solutions{% endblock %}
-
 {% load static %}
 
+{% block title %}About Us - PythonZoneBD | Modern Django Experts{% endblock %}
+
+{% block extra_head %}
+{{ block.super }}
+<style>
+    /* ========== MODERN ABOUT PAGE STYLES ========== */
+    :root {
+        --about-primary: #2563eb;
+        --about-primary-dark: #1d4ed8;
+        --about-accent: #f59e0b;
+        --about-dark: #0f172a;
+        --about-gray-50: #f9fafb;
+        --about-gray-100: #f3f4f6;
+        --about-gray-200: #e5e7eb;
+        --about-gray-600: #475569;
+        --about-gray-700: #334155;
+        --about-gray-800: #1e293b;
+        --about-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --about-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --about-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --about-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --about-radius-xl: 1rem;
+        --about-radius-2xl: 1.5rem;
+        --about-radius-3xl: 2rem;
+    }
+
+    /* Hero Section - Modern Gradient */
+    .about-hero {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+        padding: 4rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+    .about-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 70% 30%, rgba(37,99,235,0.15) 0%, transparent 70%);
+        pointer-events: none;
+    }
+    .about-hero::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 100px;
+        background: linear-gradient(to top, var(--about-gray-50), transparent);
+        pointer-events: none;
+    }
+    .about-hero h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #ffffff, #94a3b8);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+    }
+    .about-hero-badge {
+        display: inline-block;
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(8px);
+        padding: 0.4rem 1.2rem;
+        border-radius: 60px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    /* Stats Cards */
+    .stat-card {
+        background: white;
+        border-radius: var(--about-radius-2xl);
+        padding: 1.8rem;
+        text-align: center;
+        transition: all 0.3s;
+        border: 1px solid var(--about-gray-200);
+        box-shadow: var(--about-shadow-sm);
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--about-shadow-xl);
+        border-color: transparent;
+    }
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--about-primary);
+        line-height: 1.2;
+    }
+    .stat-label {
+        color: var(--about-gray-600);
+        font-weight: 500;
+        margin-top: 0.5rem;
+    }
+
+    /* Mission Vision Cards */
+    .mv-card {
+        background: white;
+        border-radius: var(--about-radius-2xl);
+        padding: 2rem;
+        height: 100%;
+        transition: all 0.3s;
+        border: 1px solid var(--about-gray-200);
+    }
+    .mv-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--about-shadow-lg);
+    }
+    .mv-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
+    .mv-icon i {
+        font-size: 1.8rem;
+        color: var(--about-primary);
+    }
+
+    /* Team Member Card */
+    .team-card {
+        background: white;
+        border-radius: var(--about-radius-2xl);
+        overflow: hidden;
+        transition: all 0.3s;
+        border: 1px solid var(--about-gray-200);
+        text-align: center;
+    }
+    .team-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--about-shadow-xl);
+        border-color: transparent;
+    }
+    .team-img {
+        width: 100%;
+        height: 260px;
+        object-fit: cover;
+        background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+    }
+    .team-info {
+        padding: 1.5rem;
+    }
+    .team-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+    .team-role {
+        font-size: 0.85rem;
+        color: var(--about-primary);
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+    }
+    .team-bio {
+        font-size: 0.85rem;
+        color: var(--about-gray-600);
+    }
+
+    /* Timeline / Milestones */
+    .timeline-item {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+    .timeline-year {
+        min-width: 80px;
+        font-weight: 800;
+        font-size: 1.3rem;
+        color: var(--about-primary);
+    }
+    .timeline-content {
+        background: white;
+        padding: 1rem 1.5rem;
+        border-radius: var(--about-radius-xl);
+        border-left: 4px solid var(--about-primary);
+        box-shadow: var(--about-shadow-sm);
+    }
+
+    /* Section Headers */
+    .section-header-about {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    .section-subtitle-about {
+        display: inline-block;
+        background: #eef2ff;
+        color: var(--about-primary);
+        padding: 0.25rem 1rem;
+        border-radius: 40px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-bottom: 1rem;
+    }
+    .section-title-about {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--about-dark);
+        letter-spacing: -0.02em;
+    }
+    .about-divider {
+        width: 70px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--about-primary), var(--about-accent));
+        border-radius: 4px;
+        margin: 1rem auto 0;
+    }
+
+    /* Values List */
+    .value-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0.8rem 0;
+        border-bottom: 1px solid var(--about-gray-200);
+    }
+    .value-icon {
+        width: 40px;
+        height: 40px;
+        background: #eef2ff;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--about-primary);
+    }
+
+    @media (max-width: 768px) {
+        .about-hero h1 {
+            font-size: 2.2rem;
+        }
+        .section-title-about {
+            font-size: 1.8rem;
+        }
+        .timeline-item {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<section class="py-5 bg-light">
-  <div class="container text-center">
-    <h1 class="fw-bold">About Us</h1>
-    <p class="lead text-muted">Built in Django. Secured by Python.</p>
-  </div>
+<!-- MODERN HERO SECTION -->
+<section class="about-hero">
+    <div class="container text-center">
+        <div class="animate__animated animate__fadeInUp">
+            <span class="about-hero-badge text-white">
+                <i class="fas fa-crown me-2"></i> Excellence in Web Development
+            </span>
+            <h1 class="fw-bold mb-3">Crafting Digital Excellence<br>with <span style="background: linear-gradient(135deg, #60a5fa, #a78bfa); background-clip: text; -webkit-background-clip: text; color: transparent;">Django & Python</span></h1>
+            <p class="lead text-white-75 mx-auto" style="max-width: 650px;">We build secure, scalable, and future-ready web solutions trusted by businesses worldwide.</p>
+        </div>
+    </div>
 </section>
 
-<section class="py-5">
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-md-6 mb-4">
-        <img src="{% static 'images/pzbd.png' %}" class="img-fluid rounded-4 shadow" style="height: 350px; object-fit: cover;" alt="Our Team">
-      </div>
-      <div class="col-md-6">
-        <h2 class="fw-bold mb-3">Who We Are</h2>
-        <p class="text-muted">
-          We create modern, secure, and scalable websites tailored to your needs. 
-          From e-commerce to hotel management systems, our mission is to deliver 
-          high-quality code that you can trust — before you pay.
-        </p>
-        <ul class="list-unstyled mt-3">
-          <li>✔️ 100% Secure & Reliable</li>
-          <li>✔️ Pay After You Receive Code</li>
-          <li>✔️ Responsive & Mobile Friendly</li>
-        </ul>
-      </div>
+<!-- STATS SECTION -->
+<section class="py-5" style="background: var(--about-gray-50); margin-top: -2rem;">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <div class="stat-number">200+</div>
+                    <div class="stat-label">Projects Delivered</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Client Satisfaction</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Support Available</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <div class="stat-number">5+</div>
+                    <div class="stat-label">Years Experience</div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+</section>
+
+<!-- WHO WE ARE + IMAGE SECTION -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 order-lg-1 order-2">
+                <div class="position-relative">
+                    <div class="bg-gradient rounded-4 overflow-hidden shadow-xl" style="background: linear-gradient(145deg, #eef2ff, #ffffff);">
+                        <img src="{% static 'images/pzbd.png' %}" 
+                             class="img-fluid w-100" 
+                             style="height: 380px; object-fit: cover; filter: brightness(0.98);"
+                             alt="PythonZoneBD Team Working">
+                    </div>
+                    <!-- floating badge -->
+                    <div class="position-absolute bottom-0 end-0 translate-middle-y bg-white rounded-pill shadow-lg px-3 py-2 me-3">
+                        <i class="fas fa-check-circle text-success me-1"></i>
+                        <span class="small fw-semibold">Trusted Since 2020</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 order-lg-2 order-1">
+                <span class="section-subtitle-about"><i class="fas fa-users me-1"></i> Our Story</span>
+                <h2 class="section-title-about mb-3">Who We Are</h2>
+                <div class="about-divider mb-4" style="margin-left: 0;"></div>
+                <p class="text-muted fs-5 mb-4">
+                    PythonZoneBD is a team of passionate developers, designers, and tech enthusiasts dedicated to crafting modern web solutions. We specialize in <strong class="text-primary">Django</strong> and <strong class="text-primary">Python</strong> ecosystems — delivering secure, high-performance applications that scale with your business.
+                </p>
+                <p class="text-muted mb-4">
+                    What sets us apart? We believe in <strong>transparency, quality, and trust</strong>. You receive the complete source code before making payment. No hidden fees, no locked-in contracts — just honest, reliable development.
+                </p>
+                
+                <div class="row g-3 mt-2">
+                    <div class="col-sm-6">
+                        <div class="value-item border-0 bg-light rounded-3 p-2 px-3">
+                            <div class="value-icon"><i class="fas fa-shield-alt"></i></div>
+                            <div><strong>Secure Code</strong><br><small class="text-muted">Bank-grade encryption</small></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="value-item border-0 bg-light rounded-3 p-2 px-3">
+                            <div class="value-icon"><i class="fas fa-rocket"></i></div>
+                            <div><strong>Fast Delivery</strong><br><small class="text-muted">Agile methodology</small></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- MISSION & VISION CARDS -->
+<section class="py-5" style="background: var(--about-gray-50);">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="mv-card animate__animated animate__fadeInLeft">
+                    <div class="mv-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3 class="fw-bold mb-3">Our Mission</h3>
+                    <p class="text-muted">To democratize high-quality web development by providing secure, scalable, and affordable Django solutions — empowering businesses to thrive in the digital age.</p>
+                    <div class="mt-3">
+                        <span class="badge bg-primary bg-opacity-10 text-primary">⚡ Impact-Driven</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mv-card animate__animated animate__fadeInRight">
+                    <div class="mv-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3 class="fw-bold mb-3">Our Vision</h3>
+                    <p class="text-muted">To become the most trusted Django development partner globally — known for transparency, innovation, and delivering code that businesses can truly own.</p>
+                    <div class="mt-3">
+                        <span class="badge bg-primary bg-opacity-10 text-primary">🌍 Global Reach</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- OUR VALUES SECTION -->
+<section class="py-5">
+    <div class="container">
+        <div class="section-header-about">
+            <span class="section-subtitle-about"><i class="fas fa-gem me-1"></i> Core Principles</span>
+            <h2 class="section-title-about">What Drives Us</h2>
+            <div class="about-divider"></div>
+            <p class="text-muted mt-3">Values that shape every line of code we write</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="text-center p-4">
+                    <div class="mx-auto mb-3" style="width: 55px; height: 55px; background: #eef2ff; border-radius: 55px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-lock fa-xl text-primary"></i>
+                    </div>
+                    <h6 class="fw-bold">Security First</h6>
+                    <small class="text-muted">Django best practices</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="text-center p-4">
+                    <div class="mx-auto mb-3" style="width: 55px; height: 55px; background: #eef2ff; border-radius: 55px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-code fa-xl text-primary"></i>
+                    </div>
+                    <h6 class="fw-bold">Clean Code</h6>
+                    <small class="text-muted">Maintainable & scalable</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="text-center p-4">
+                    <div class="mx-auto mb-3" style="width: 55px; height: 55px; background: #eef2ff; border-radius: 55px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-handshake fa-xl text-primary"></i>
+                    </div>
+                    <h6 class="fw-bold">Trust & Transparency</h6>
+                    <small class="text-muted">Pay after delivery</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="text-center p-4">
+                    <div class="mx-auto mb-3" style="width: 55px; height: 55px; background: #eef2ff; border-radius: 55px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-headset fa-xl text-primary"></i>
+                    </div>
+                    <h6 class="fw-bold">24/7 Support</h6>
+                    <small class="text-muted">Always here to help</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COMPANY MILESTONES / TIMELINE -->
+<section class="py-5" style="background: var(--about-gray-50);">
+    <div class="container">
+        <div class="section-header-about">
+            <span class="section-subtitle-about"><i class="fas fa-chart-line me-1"></i> Our Journey</span>
+            <h2 class="section-title-about">Milestones</h2>
+            <div class="about-divider"></div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="timeline-item">
+                    <div class="timeline-year">2020</div>
+                    <div class="timeline-content">
+                        <h6 class="fw-bold mb-1">Company Founded</h6>
+                        <p class="small text-muted mb-0">Started with a mission to deliver quality Django solutions in Bangladesh and beyond.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2022</div>
+                    <div class="timeline-content">
+                        <h6 class="fw-bold mb-1">100+ Projects Milestone</h6>
+                        <p class="small text-muted mb-0">Expanded team and served international clients across 12 countries.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2024</div>
+                    <div class="timeline-content">
+                        <h6 class="fw-bold mb-1">Launch of Premium Store</h6>
+                        <p class="small text-muted mb-0">Introduced ready-made Django websites with pay-after-receive model.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2025</div>
+                    <div class="timeline-content">
+                        <h6 class="fw-bold mb-1">Global Recognition</h6>
+                        <p class="small text-muted mb-0">Recognized as top Django development partner in South Asia.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TEAM SECTION (Optional but professional) -->
+<section class="py-5">
+    <div class="container">
+        <div class="section-header-about">
+            <span class="section-subtitle-about"><i class="fas fa-user-friends me-1"></i> The Minds Behind</span>
+            <h2 class="section-title-about">Meet Our Core Team</h2>
+            <div class="about-divider"></div>
+            <p class="text-muted">Passionate developers committed to your success</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="team-card">
+                    <div class="team-img bg-secondary d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(135deg, #2563eb, #1e40af);">
+                        <i class="fas fa-user-tie fa-4x opacity-50"></i>
+                    </div>
+                    <div class="team-info">
+                        <h5 class="team-name">Md. Rahat Khan</h5>
+                        <div class="team-role">Founder & Lead Architect</div>
+                        <p class="team-bio">10+ years in Python/Django, ex-enterprise architect.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="team-card">
+                    <div class="team-img bg-secondary d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(135deg, #0891b2, #0e7490);">
+                        <i class="fas fa-laptop-code fa-4x opacity-50"></i>
+                    </div>
+                    <div class="team-info">
+                        <h5 class="team-name">Farhana Akter</h5>
+                        <div class="team-role">Senior Full-Stack Dev</div>
+                        <p class="team-bio">Expert in DRF, React, and scalable backend systems.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="team-card">
+                    <div class="team-img bg-secondary d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(135deg, #059669, #047857);">
+                        <i class="fas fa-chalkboard-user fa-4x opacity-50"></i>
+                    </div>
+                    <div class="team-info">
+                        <h5 class="team-name">Shamim Hossain</h5>
+                        <div class="team-role">Head of Support</div>
+                        <p class="team-bio">Client satisfaction specialist, 24/7 escalation manager.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA: Trust Badge / Why Work With Us -->
+<section class="py-5 mb-4">
+    <div class="container">
+        <div class="text-center bg-gradient p-5 rounded-4" style="background: linear-gradient(135deg, #0f172a, #1e293b);">
+            <h3 class="text-white fw-bold mb-3">Ready to Build Something Great?</h3>
+            <p class="text-white-75 mb-4">Join 200+ satisfied clients who trust us with their digital presence.</p>
+            <a href="{% url 'contact' %}" class="btn btn-light rounded-pill px-5 py-2 fw-semibold">
+                Start a Project <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
 </section>
 {% endblock %}

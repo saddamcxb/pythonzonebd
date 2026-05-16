@@ -1,32 +1,451 @@
 {% extends "base.html" %}
-{% block title %}Contact Us{% endblock %}
+{% load static %}
+
+{% block title %}Contact Us | PythonZoneBD{% endblock %}
+
+{% block extra_head %}
+{{ block.super }}
+<style>
+    /* ========== MODERN CONTACT PAGE STYLES ========== */
+    :root {
+        --contact-primary: #2563eb;
+        --contact-primary-dark: #1d4ed8;
+        --contact-accent: #f59e0b;
+        --contact-gray-50: #f9fafb;
+        --contact-gray-100: #f3f4f6;
+        --contact-gray-200: #e5e7eb;
+        --contact-gray-300: #d1d5db;
+        --contact-gray-600: #4b5563;
+        --contact-gray-700: #374151;
+        --contact-gray-800: #1f2937;
+        --contact-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --contact-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --contact-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --contact-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --contact-radius-xl: 1rem;
+        --contact-radius-2xl: 1.5rem;
+    }
+
+    /* Hero Section Modern */
+    .contact-hero {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+        padding: 3rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+    .contact-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(37,99,235,0.2) 0%, transparent 60%);
+        pointer-events: none;
+    }
+    .contact-hero h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #ffffff, #94a3b8);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+    }
+    .contact-hero p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    /* Contact Info Cards */
+    .contact-info-card {
+        background: white;
+        border-radius: var(--contact-radius-2xl);
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s;
+        border: 1px solid var(--contact-gray-200);
+        height: 100%;
+    }
+    .contact-info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--contact-shadow-lg);
+        border-color: transparent;
+    }
+    .contact-icon-wrapper {
+        width: 65px;
+        height: 65px;
+        background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+        border-radius: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+    }
+    .contact-icon-wrapper i {
+        font-size: 1.8rem;
+        color: var(--contact-primary);
+    }
+
+    /* Modern Form */
+    .contact-form-modern {
+        background: white;
+        border-radius: var(--contact-radius-2xl);
+        box-shadow: var(--contact-shadow-xl);
+        padding: 2rem;
+        border: 1px solid var(--contact-gray-200);
+    }
+    .form-group-modern {
+        margin-bottom: 1.5rem;
+    }
+    .form-label-modern {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--contact-gray-800);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .form-label-modern i {
+        color: var(--contact-primary);
+        font-size: 0.9rem;
+    }
+    .form-control-modern {
+        width: 100%;
+        padding: 0.85rem 1rem;
+        border: 1.5px solid var(--contact-gray-200);
+        border-radius: 1rem;
+        transition: all 0.2s;
+        font-size: 0.95rem;
+    }
+    .form-control-modern:focus {
+        outline: none;
+        border-color: var(--contact-primary);
+        box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    }
+    textarea.form-control-modern {
+        resize: vertical;
+        min-height: 120px;
+    }
+    .btn-submit-modern {
+        background: linear-gradient(105deg, var(--contact-primary), var(--contact-primary-dark));
+        border: none;
+        padding: 1rem;
+        font-weight: 700;
+        font-size: 1rem;
+        border-radius: 2rem;
+        transition: all 0.25s;
+        width: 100%;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    .btn-submit-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px -8px rgba(37,99,235,0.4);
+        background: linear-gradient(105deg, var(--contact-primary-dark), #1e3a8a);
+    }
+
+    /* Map Section */
+    .map-container {
+        border-radius: var(--contact-radius-2xl);
+        overflow: hidden;
+        box-shadow: var(--contact-shadow-lg);
+        height: 300px;
+    }
+    .map-container iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+
+    /* Business Hours */
+    .hours-list {
+        list-style: none;
+        padding: 0;
+    }
+    .hours-list li {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--contact-gray-200);
+    }
+    .hours-list li:last-child {
+        border-bottom: none;
+    }
+    .hours-day {
+        font-weight: 600;
+        color: var(--contact-gray-800);
+    }
+    .hours-time {
+        color: var(--contact-gray-600);
+    }
+
+    /* Social Links */
+    .social-links-contact {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+    .social-circle {
+        width: 45px;
+        height: 45px;
+        background: var(--contact-gray-100);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        color: var(--contact-gray-600);
+        font-size: 1.2rem;
+        text-decoration: none;
+    }
+    .social-circle:hover {
+        background: var(--contact-primary);
+        color: white;
+        transform: translateY(-3px);
+    }
+
+    /* Alert Styling */
+    .alert-modern {
+        border-radius: 1rem;
+        border: none;
+        padding: 1rem;
+        margin-top: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .alert-modern.success {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    @media (max-width: 768px) {
+        .contact-hero h1 {
+            font-size: 2.2rem;
+        }
+        .contact-form-modern {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<section class="py-3 bg-primary">
-  <div class="container text-center text-white">
-    <h1 class="fw-bold">Contact Us</h1>
-    <p class="text-white">We’d love to hear from you. Reach out anytime.</p>
-  </div>
-</section>
-
-<section class="py-5">
-  <div class="container ">
-    <div class="row justify-content-center">
-      <!-- Contact Form -->
-      <div class="col-md-6">
-        <form method="post" class="p-4 bg-white shadow rounded-4">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <button type="submit" class="btn btn-primary w-100 rounded-pill">Send Message</button>
-        </form>
-
-        {% if messages %}
-          {% for msg in messages %}
-            <div class="alert alert-success mt-3">{{ msg }}</div>
-          {% endfor %}
-        {% endif %}
-      </div>
+<!-- MODERN HERO SECTION -->
+<section class="contact-hero">
+    <div class="container text-center">
+        <div class="animate__animated animate__fadeInUp">
+            <span class="badge bg-white bg-opacity-20 text-info px-3 py-2 rounded-pill mb-3" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(4px);">
+                <i class="fas fa-comment-dots me-2"></i> Get in Touch
+            </span>
+            <h1 class="fw-bold mb-3">Let's Start a Conversation</h1>
+            <p class="lead mx-auto text-white" style="max-width: 600px;">Whether you have a question, need a custom solution, or want to collaborate — we're here to help.</p>
+        </div>
     </div>
-  </div>
 </section>
+
+<!-- CONTACT INFO CARDS -->
+<section class="py-4">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="contact-info-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+                    <div class="contact-icon-wrapper">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Visit Us</h5>
+                    <p class="text-muted mb-0">123 Digital Avenue,<br>Dhaka, Bangladesh</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="contact-info-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                    <div class="contact-icon-wrapper">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Email Us</h5>
+                    <p class="text-muted mb-0">hello@pythonezonebd.com<br>support@pythonezonebd.com</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="contact-info-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+                    <div class="contact-icon-wrapper">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Call Us</h5>
+                    <p class="text-muted mb-0">+880 1234 567890<br>+880 1987 654321</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- MAIN CONTACT SECTION: FORM + SIDEBAR -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-5">
+            <!-- CONTACT FORM (Modernized) -->
+            <div class="col-lg-6">
+                <div class="contact-form-modern">
+                    <div class="mb-4">
+                        <h3 class="fw-bold mb-2">Send us a Message</h3>
+                        <p class="text-muted">Fill out the form below and we'll get back to you within 24 hours.</p>
+                        <div style="width: 50px; height: 3px; background: linear-gradient(90deg, var(--contact-primary), var(--contact-accent));"></div>
+                    </div>
+                    
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger rounded-3">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Custom rendering of Django form fields with modern styling -->
+                        {% for field in form %}
+                        <div class="form-group-modern">
+                            <label for="{{ field.id_for_label }}" class="form-label-modern">
+                                <i class="fas fa-{% if field.name == 'name' %}user{% elif field.name == 'email' %}envelope{% elif field.name == 'message' %}comment-dots{% else %}circle-info{% endif %}"></i>
+                                {{ field.label }}
+                                {% if field.field.required %}
+                                    <span class="text-danger">*</span>
+                                {% endif %}
+                            </label>
+                            {% if field.field.widget.input_type == 'textarea' %}
+                                <textarea name="{{ field.name }}" 
+                                          id="{{ field.id_for_label }}" 
+                                          class="form-control-modern {% if field.errors %}is-invalid{% endif %}"
+                                          placeholder="{{ field.label }}..."
+                                          rows="5">{% if field.value %}{{ field.value }}{% endif %}</textarea>
+                            {% else %}
+                                <input type="{{ field.field.widget.input_type|default:'text' }}" 
+                                       name="{{ field.name }}" 
+                                       id="{{ field.id_for_label }}" 
+                                       class="form-control-modern {% if field.errors %}is-invalid{% endif %}"
+                                       placeholder="{{ field.label }}"
+                                       value="{% if field.value %}{{ field.value }}{% endif %}">
+                            {% endif %}
+                            {% if field.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in field.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if field.help_text %}
+                                <small class="text-muted d-block mt-1">{{ field.help_text }}</small>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        
+                        <button type="submit" class="btn-submit-modern">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </form>
+                    
+                    {% if messages %}
+                        {% for msg in messages %}
+                            <div class="alert-modern success animate__animated animate__fadeInUp mt-3">
+                                <i class="fas fa-check-circle fa-lg"></i>
+                                <span>{{ msg }}</span>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- SIDEBAR INFO -->
+            <div class="col-lg-6">
+                <!-- Business Hours Card -->
+                <div class="contact-info-card mb-4" style="text-align: left;">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="contact-icon-wrapper" style="width: 50px; height: 50px;">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h5 class="fw-bold mb-0">Business Hours</h5>
+                    </div>
+                    <ul class="hours-list">
+                        <li><span class="hours-day">Monday - Friday</span><span class="hours-time">9:00 AM - 8:00 PM</span></li>
+                        <li><span class="hours-day">Saturday</span><span class="hours-time">10:00 AM - 5:00 PM</span></li>
+                        <li><span class="hours-day">Sunday</span><span class="hours-time">Closed (Emergency Only)</span></li>
+                        <li><span class="hours-day">Support Response</span><span class="hours-time text-primary">&lt; 2 hours</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- MAP SECTION (Optional Professional Touch) -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="map-container">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3650.837473415754!2d90.406089!3d23.780674!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c7c5c9c5c5c5%3A0x5c5c5c5c5c5c5c5c!2sDhaka!5e0!3m2!1sen!2sbd!4v1700000000000!5m2!1sen!2sbd" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+                <div class="text-center mt-3">
+                    <small class="text-muted"><i class="fas fa-location-dot me-1 text-primary"></i> Located in Dhaka, serving clients worldwide</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<style>
+    /* Override any default form styling from Django */
+    .contact-form-modern input, 
+    .contact-form-modern textarea,
+    .contact-form-modern select {
+        font-family: inherit;
+    }
+    .bg-white.bg-opacity-20 {
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(4px);
+    }
+    .btn-outline-primary {
+        border: 1.5px solid var(--contact-primary);
+        background: transparent;
+        transition: all 0.2s;
+    }
+    .btn-outline-primary:hover {
+        background: var(--contact-primary);
+        color: white;
+        border-color: var(--contact-primary);
+    }
+    .map-container iframe {
+        filter: grayscale(0.1) contrast(0.95);
+        transition: filter 0.3s;
+    }
+    .map-container iframe:hover {
+        filter: grayscale(0);
+    }
+</style>
+
+<!-- Optional: JavaScript for form validation enhancement -->
+<script>
+    (function() {
+        // Add Bootstrap-like validation to modern form (enhance UX)
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        }
+    })();
+</script>
 {% endblock %}
